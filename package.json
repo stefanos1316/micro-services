@@ -1,0 +1,29 @@
+{
+  "name": "micro-services",
+  "version": "1.0.0",
+  "description": "A simple app using micro-services",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stefanos1316/micro-services.git"
+  },
+  "keywords": [
+    "micro-services",
+    "nodejs",
+    "mongo",
+    "express"
+  ],
+  "author": "Stefanos Georgiou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stefanos1316/micro-services/issues"
+  },
+  "homepage": "https://github.com/stefanos1316/micro-services#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.5.7"
+  }
+}
