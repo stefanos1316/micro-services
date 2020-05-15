@@ -1,5 +1,7 @@
 const express = require('express')
 const mongodb = require('mongodb').MongoClient;
+const fs = require('fs');
+const path = require('path');
 const tinify = require("tinify");
 tinify.key = "JlYJ6Rc22LBy6ZsTlD0HCW6D3bHZjqGc";
 const url = 'mongodb://localhost:27017/';
@@ -24,10 +26,6 @@ async function addUser(info) {
     await client.close();
 }
 
-async function compressImage(url) {
-    
-}
-
 app.get('/getUser', async (req, res) => {
     var userInfo;
     Object.keys(req.query).length != 0 ? userInfo = await getUser(req.query) : res.send('Please provide email to get data');
@@ -40,8 +38,9 @@ app.post('/addUser', async (req, res) => {
 });
 
 app.post('/compress', async (req, res) => {
-    const source = tinify.fromUrl("https://tinypng.com/images/panda-happy.png");
-    source.toFile("optimized.jpg");
+    var source;
+    Object.keys(req.body).length != 0 ? source = tinify.fromUrl(req.body.url) : res.send('Please provide url');
+    res.sendFile(path.resolve(__dirname, 'optimized.jpg'));
 });
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
