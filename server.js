@@ -1,36 +1,47 @@
 const express = require('express')
 const mongodb = require('mongodb').MongoClient;
-const url = 'mongodb://localhost:27017/socialDatabase';
+const tinify = require("tinify");
+tinify.key = "JlYJ6Rc22LBy6ZsTlD0HCW6D3bHZjqGc";
+const url = 'mongodb://localhost:27017/';
 const app = express();
 
 app.use(express.json());
 const port = 3000;
 
-async function getUser(credentials) {
-    let db = await mongodb.connect(url);
-    if (await db.authenticate(credentials.name, credentials.password)) {
-        let thing = await db.collection("Things").findOne({ name: "bob" });
-        await db.close();
-        return thing;
-    }
+async function getUser(info) {
+    const client = await mongodb.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
+    const db = client.db('socialDatabase');
+    let key = Object.keys(info);
+    let userInfo = await db.collection('users').findOne({ key: info['key'] });
+    await client.close();
+    return userInfo;
 }
 
 async function addUser(info) {
-    let db = await mongodb.connect(url);
+    const client = await mongodb.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
+    const db = client.db('socialDatabase');
     await db.collection('users').insertOne(info);
-    await db.close;
+    await client.close();
 }
 
-app.get('/sum', (req, res) => {
-    var total = (req.query.a - 0) + (req.query.b - 0); 
-    res.send('The answer is ' + total);
+async function compressImage(url) {
+    
+}
+
+app.get('/getUser', async (req, res) => {
+    var userInfo;
+    Object.keys(req.query).length != 0 ? userInfo = await getUser(req.query) : res.send('Please provide email to get data');
+    res.send(userInfo);
 });
 
-app.post('/addUser', (req, res) => {
-    Object.keys(req.body).length != 0 ? addUser(req.body) : res.send('Please provide user data');
+app.post('/addUser', async (req, res) => {
+    Object.keys(req.body).length != 0 ? await addUser(req.body) : res.send('Please provide user data');
     res.send('New user has been added');    
 });
 
-// curl --request POST --url "http://localhost:3000/addUser" --header 'content-type: application/json' --data '{"name": "stefanos"}'
+app.post('/compress', async (req, res) => {
+    const source = tinify.fromUrl("https://tinypng.com/images/panda-happy.png");
+    source.toFile("optimized.jpg");
+});
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
