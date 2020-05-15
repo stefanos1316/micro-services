@@ -13,15 +13,18 @@ if [ "$1" == "-h" -o "$1" == "--help" ]; then
 	echo
 	echo To compress an image use -c or --compress and as a second command line argument
 	echo pass the url from an online image
+	echo "https://tinypng.com/images/panda-happy.png"
 	echo
 	exit
 fi
 
 case $1 in
-	-c|--compress) 
+	-c|--compress)
+		imageName=`echo $2 | awk -F'/' '{print $NF}' | awk -F'.' '{print $1}'`
 		curl --request POST --url "http://localhost:3000/compress" \
 			--header 'content-type: application/json' \
-			--data '{"url": '$2'}' ;;
+			--data '{"url": '$2'}' \
+		        --output $imageName;;
 	-a|--addUser)
 		curl --request POST --url "http://localhost:3000/addUser" \
 			--header 'content-type: application/json' \

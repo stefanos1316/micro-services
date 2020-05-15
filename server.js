@@ -40,6 +40,7 @@ app.post('/addUser', async (req, res) => {
 app.post('/compress', async (req, res) => {
     var source;
     Object.keys(req.body).length != 0 ? source = tinify.fromUrl(req.body.url) : res.send('Please provide url');
+    source.toFile('optimized.jpg')
     res.sendFile(path.resolve(__dirname, 'optimized.jpg'));
 });
 
